@@ -7,5 +7,5 @@ import retrofit2.http.POST
 
 interface OpenAiService {
     @POST("chat/completions")
-    fun getMessages(@Body post: BodyToSend): GeneratedAnswer
+    suspend fun getMessages(@Body post: BodyToSend): GeneratedAnswer
 }

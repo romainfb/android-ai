@@ -6,8 +6,7 @@ import com.supdevinci.aieaie.service.RetrofitInstance
 
 class OpenAiRepository {
         private val openAiService = RetrofitInstance.openAiService
-
-        fun getChatFromOpenAi(bodyToSend: BodyToSend): GeneratedAnswer {
+        suspend fun getChatFromOpenAi(bodyToSend: BodyToSend): GeneratedAnswer {
                 return openAiService.getMessages(bodyToSend)
         }
 }

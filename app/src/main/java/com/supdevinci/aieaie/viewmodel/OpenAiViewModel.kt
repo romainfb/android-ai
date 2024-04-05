@@ -12,18 +12,14 @@ import kotlinx.coroutines.launch
 
 class OpenAiViewModel : ViewModel() {
     private val repository = OpenAiRepository()
-    val openAiResponse: MutableStateFlow<GeneratedAnswer>? = null
+    var openAiResponse: GeneratedAnswer? = null
 
     fun fetchMessages() {
         viewModelScope.launch {
             try {
-                // Mettre votre textes ici
-                val bodyToSend = BodyToSend(messages = listOf(
-                    OpenAiMessageBody(role= "assistant", content= "test test")
-                ))
-                openAiResponse?.value = repository.getChatFromOpenAi(bodyToSend)
-
-                Log.e("Fetch Messages List : ", openAiResponse?.value.toString())
+                val bodyToSend = BodyToSend(messages = listOf(OpenAiMessageBody(role= "assistant", content= "test test")))
+                openAiResponse = repository.getChatFromOpenAi(bodyToSend)
+                Log.e("Fetch Messages List : ", openAiResponse.toString())
             } catch (e: Exception) {
                 // Handle error
                 Log.e("Fetch Contact List : ", e.message.toString())
