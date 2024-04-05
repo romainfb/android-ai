@@ -1,71 +1,89 @@
 package com.supdevinci.aieaie.view
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import com.supdevinci.aieaie.model.IaModel
+import androidx.compose.ui.unit.dp
+import com.supdevinci.aieaie.model.response.GeneratedAnswer
 import com.supdevinci.aieaie.ui.theme.AIEAIETheme
-import com.supdevinci.aieaie.viewmodel.MainActivityViewModel
+import com.supdevinci.aieaie.viewmodel.OpenAiViewModel
 
 class MainActivity : ComponentActivity() {
-    private val mainActivityViewModel = MainActivityViewModel()
-
-    private val iaModel1 = IaModel("Toto", 200 )
-    private val iaModel2 = IaModel("LALA", 500 )
-    private val iaModel3 = IaModel("IAAAAAAA", 400 )
-    private val iaModel4 = IaModel("supdevinci", 300 )
+    private val openAiViewModel = OpenAiViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        openAiViewModel.fetchMessages()
         setContent {
             AIEAIETheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    MessageScreen(openAiViewModel)
                 }
             }
-            mainActivityViewModel.checkResponseCode(200, iaModel1.responseCode)
-            mainActivityViewModel.checkResponseCode(200, iaModel2.responseCode)
-            mainActivityViewModel.checkResponseCode(200, iaModel3.responseCode)
-            mainActivityViewModel.checkResponseCode(200, iaModel4.responseCode)
-            showToast(mainActivityViewModel.concatText(iaModel1.responseMsg))
+        }
+    }
+}
+
+
+@Composable
+fun MessageScreen(viewModel: OpenAiViewModel) {
+    val messagesList by viewModel.openAiResponse.collectAsState()
+
+    println("TEST TEST ${messagesList}")
+    Column {
+        if (messagesList == null) {
+            Text(text = "Loading...")
+        } else {
+            MessagesItemList(
+                messagesList = messagesList!!
+            )
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-    Button(onClick = { /*TODO*/ }) {
-        
-    }
-}
-
-@Composable
-fun showToast(textToDisplay: String) {
-    Toast.makeText(LocalContext.current, textToDisplay, Toast.LENGTH_LONG).show()
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AIEAIETheme {
-        Greeting("Android")
+fun MessagesItemList(
+    messagesList: GeneratedAnswer
+) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(messagesList.choices) { message ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "${message.message.role}",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    Text(
+                        text = "${message.message.content}",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
+            }
+        }
     }
 }
