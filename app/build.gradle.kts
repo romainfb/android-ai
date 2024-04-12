@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("kapt")
 }
 
 android {
@@ -72,4 +73,11 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("com.squareup.okhttp3:logging-interceptor:3.8.0")
+    implementation ("com.github.bumptech.glide:glide:4.14.2")
+    implementation ("jp.wasabeef:glide-transformations:4.3.0")
+    implementation ("jp.co.cyberagent.android:gpuimage:2.1.0")
+    implementation ("androidx.compose.ui:ui-text-google-fonts:1.6.1")
+    implementation("androidx.room:room-ktx:2.5.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+
 }
